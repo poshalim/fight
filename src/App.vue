@@ -14,7 +14,7 @@
     </main>
 
     <footer class="p-3 text-center text-xs opacity-80 bg-gray-900/70 backdrop-blur">
-      <span>⚙️ Vue 3 + Pinia + Socket.io + Tailwind</span>
+      <a href="https://t.me/analprogramming" target="_blank" rel="noopener noreferrer" class="hover:opacity-100 transition-opacity">Author · Telegram @analprogramming</a>
     </footer>
   </div>
 </template>
