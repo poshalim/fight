@@ -15,7 +15,7 @@
         <div>
           <div class="flex items-baseline justify-between text-xs mb-1">
             <span>Некоглай HP: {{ state.nekoglai.hp }}</span>
-            <span class="opacity-80 text-[10px]">урон за удар: 15</span>
+            <span class="opacity-80 text-[10px]">урон за удар: 12</span>
           </div>
           <div class="w-full h-3 bg-gray-700 rounded">
             <div class="h-3 rounded bg-nekoglai transition-all" :class="{ 'hp-low': state.nekoglai.hp <= RAGE_HP }" :style="{ width: healthWidth(state.nekoglai.hp) }"></div>
@@ -188,6 +188,8 @@ let hitAudio: HTMLAudioElement | null = null
 let pickupAudio: HTMLAudioElement | null = null
 let mafanyaHitIndex = 0
 let nekoglaiHitIndex = 0
+let lastNekoglaiLaughTime = 0
+const NEKOGLAI_LAUGH_COOLDOWN_MS = 20000
 const HIT_BASE_VOLUME = 0.7
 const PICKUP_BASE_VOLUME = 0.7
 const nekoglaiPickupSound = new URL('../../audio/неког_будь.mp3', import.meta.url).href
@@ -195,6 +197,11 @@ function playHitSound(role: 'nekoglai' | 'mafanya') {
   const list = role === 'mafanya' ? mafanyaHitTracks : nekoglaiHitTracks
   if (!list.length) return
   if (hitAudio && !hitAudio.paused) return
+  if (role === 'nekoglai') {
+    const now = Date.now()
+    if (now - lastNekoglaiLaughTime < NEKOGLAI_LAUGH_COOLDOWN_MS) return
+    lastNekoglaiLaughTime = now
+  }
   const nextIndex = role === 'mafanya' ? mafanyaHitIndex : nekoglaiHitIndex
   const src = list[nextIndex % list.length]
   if (role === 'mafanya') mafanyaHitIndex = (nextIndex + 1) % list.length
@@ -203,7 +210,20 @@ function playHitSound(role: 'nekoglai' | 'mafanya') {
   hitAudio = audio
   audio.src = src
   audio.currentTime = 0
-  audio.volume = HIT_BASE_VOLUME * masterGain.value
+  const hitVol = role === 'nekoglai' ? 0.5 : 1
+  audio.volume = HIT_BASE_VOLUME * masterGain.value * hitVol
+  if (role === 'nekoglai') {
+    const stopAtHalf = () => {
+      const d = audio.duration
+      if (typeof d === 'number' && !isNaN(d) && d > 0) {
+        setTimeout(() => {
+          if (hitAudio === audio && !audio.paused) audio.pause()
+        }, (d / 2) * 1000)
+      }
+    }
+    audio.addEventListener('loadedmetadata', stopAtHalf, { once: true })
+    if (audio.readyState >= 1) stopAtHalf()
+  }
   audio.play().catch(() => {})
 }
 
@@ -339,7 +359,7 @@ watch(
   () => roomStore.lastEmote,
   (payload: { role: 'nekoglai'|'mafanya'; value?: string; id: number } | null) => {
     if (!payload) return
-    const isYouRole = (youIsNekoglai ? 'nekoglai' : 'mafanya') === payload.role
+    const isYouRole = (youIsNekoglai.value ? 'nekoglai' : 'mafanya') === payload.role
     triggerEmote(isYouRole ? 'you' : 'opponent', payload.value)
   }
 )

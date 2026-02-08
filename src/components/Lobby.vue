@@ -51,11 +51,8 @@ const roomId = ref('')
 const loading = ref(false)
 const error = ref('')
 
-const nekoglaiCard = `data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 200"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#312e81"/></linearGradient></defs><rect width="160" height="200" rx="16" fill="url(#g)"/><text x="80" y="110" text-anchor="middle" fill="#fff" font-size="32" font-family="Arial">NEKO</text></svg>')}`
-const mafanyaCard = `data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 200"><defs><linearGradient id="r" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ef4444"/><stop offset="1" stop-color="#7f1d1d"/></linearGradient></defs><rect width="160" height="200" rx="16" fill="url(#r)"/><text x="80" y="110" text-anchor="middle" fill="#fff" font-size="32" font-family="Arial">MAFA</text></svg>')}`
-// реальная Полина
-// путь от components до корня: ../../polina.jpeg
-// Vite сам превратит импорт в URL
+import nekoglaiCard from '../../nekog.webp'
+import mafanyaCard from '../../mafa.jpg'
 import polinaCard from '../../polina.jpeg'
 
 async function join() {

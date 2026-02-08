@@ -324,8 +324,8 @@ io.on('connection', (socket) => {
         if (Math.abs(me.x - other.x) < 80 && Math.abs(me.y - other.y) < 60) {
           // если некоглай в ступоре — урон по нему не проходит
           if (other.id === 'nekoglai' && other.stunned) break
-          // Некоглай бьёт 15, Мафаня — 10 (или 15 если есть буст урона)
-          let dmg = role === 'nekoglai' ? 15 : 10
+          // Некоглай бьёт 12, Мафаня — 10 (или 15 если есть буст урона)
+          let dmg = role === 'nekoglai' ? 12 : 10
           if (role === 'mafanya' && me.damageBoost) dmg = 15
           if (other.shield) {
             dmg = Math.ceil(dmg * 0.4)

@@ -83,7 +83,8 @@ export const useRoomStore = defineStore('room', () => {
   function connect() {
     if (!socket) {
       const token = import.meta.env.VITE_BASIC_AUTH_TOKEN || 'stream-fight'
-      socket = io('http://localhost:3001', { transports: ['websocket'], query: { token } })
+      const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001'
+      socket = io(socketUrl, { transports: ['websocket'], query: { token } })
       // inbound events
       socket.on('state', (s: any) => applyState(s))
       socket.on('flash', (payload: { victim: 'nekoglai' | 'mafanya'; dmg: number }) => {
